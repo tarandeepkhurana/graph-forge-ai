@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% block title %}{{ workspace.name }} · GraphForge{% endblock %}
+
+{% block body %}
+<div class="app" data-rail="open">
+
+  <header class="topbar">
+    <button class="btn-quiet" id="rail-toggle" aria-label="Toggle document list"
+            style="padding:4px 8px;font-family:var(--mono)">☰</button>
+    <div class="wordmark">GraphForge</div>
+    <div class="workspace-name">{{ workspace.name }}</div>
+    <div class="topbar-spacer"></div>
+
+    <form id="upload-form" style="display:flex;gap:8px;align-items:center">
+      <input type="file" id="file-input" name="file" hidden
+             accept=".pdf,.docx,.md,.txt,.rst">
+      <button type="button" class="btn-ink" id="upload-btn">Add document</button>
+    </form>
+    <button id="chat-toggle">Ask</button>
+    <form method="post" action="/auth/logout" id="logout-form">
+      <button type="submit" class="btn-quiet">Sign out</button>
+    </form>
+  </header>
+
+  <nav class="rail" aria-label="Documents">
+    <div class="rail-head">
+      <span class="eyebrow">Documents</span>
+      <span class="rail-count" id="doc-count">{{ documents|length }}</span>
+    </div>
+
+    <div id="doc-list">
+      {% for doc in documents %}
+      <div class="doc-row">
+      <button class="doc" data-id="{{ doc.id }}" data-status="{{ doc.status.value }}">
+        <div class="doc-name">{{ doc.filename }}</div>
+        <div class="doc-meta">
+          {%- if doc.status.value == "ready" -%}
+            {{ doc.pages or "—" }} pages · ready
+          {%- else -%}
+            {{ doc.status.value }}
+          {%- endif -%}
+        </div>
+        <div class="doc-progress"><i style="width:{{ 100 if doc.status.value == 'ready' else 0 }}%"></i></div>
+      </button>
+      <button class="doc-delete" data-id="{{ doc.id }}" data-name="{{ doc.filename }}"
+              title="Remove this document and its graph"
+              aria-label="Remove {{ doc.filename }}">✕</button>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if not documents %}
+    <p class="rail-empty">Nothing here yet. Add a PDF, Word file, Markdown or plain text and it will be read into the graph.</p>
+    {% endif %}
+  </nav>
+
+  <div class="canvas-wrap">
+    <div id="canvas"></div>
+
+    <div class="toolbar" role="group" aria-label="Editing mode">
+      <button class="tool" id="m-select" aria-pressed="true" title="Select and move (V)" aria-label="Select">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l7 16 2-7 7-2z"/></svg>
+      </button>
+      <button class="tool" id="m-connect" aria-pressed="false" title="Draw a link (C)" aria-label="Link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8.5 8.5l7 7"/></svg>
+      </button>
+      <button class="tool" id="m-add" aria-pressed="false" title="Add a concept (N)" aria-label="Add">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg>
+      </button>
+    </div>
+    <p class="mode-hint" id="mode-hint" hidden></p>
+
+    <div class="canvas-tools">
+      <button id="zoom-in"  title="Zoom in"    aria-label="Zoom in">+</button>
+      <button id="zoom-out" title="Zoom out"   aria-label="Zoom out">−</button>
+      <button id="zoom-fit" title="Fit to view (F)" aria-label="Fit to view">⊡</button>
+      <button id="relayout" title="Re-arrange" aria-label="Re-arrange">◇</button>
+    </div>
+
+    <div class="layout-switch" role="group" aria-label="Arrangement">
+      <button id="layout-web" aria-pressed="true"
+              title="Cluster related concepts together">Web</button>
+      <button id="layout-flow" aria-pressed="false"
+              title="Lay out top-to-bottom along the arrows, so chains read like sentences">Flow</button>
+    </div>
+
+    <p class="canvas-teaches" id="canvas-teaches" hidden></p>
+
+    <div class="select-bar" id="select-bar" hidden>
+      <span id="select-count"></span>
+      <div class="swatches" id="select-swatches"></div>
+    </div>
+
+    <div class="canvas-progress" id="canvas-progress" hidden>
+      <p class="progress-doc" id="progress-doc">document.pdf</p>
+      <p class="progress-stage" id="progress-stage">Reading the document</p>
+      <div class="progress-track"><i id="progress-fill" style="width:0%"></i></div>
+      <p class="progress-note">Building the graph. You can open another document while this runs.</p>
+    </div>
+
+    <div class="canvas-empty" hidden>
+      <p class="empty-title" id="canvas-empty-title">Empty canvas</p>
+      <p id="canvas-empty-body">Add a document and the model will sketch a graph from it. You correct what it gets wrong.</p>
+      <button class="btn" id="upload-btn-empty">Add a document</button>
+      <button class="btn" id="canvas-retry" hidden>Try again</button>
+    </div>
+
+    <aside class="dock" id="dock" data-open="false" data-view="node" aria-label="Details and chat">
+      <div class="dock-tabs" role="tablist">
+        <button class="dock-tab" id="tab-node" role="tab" aria-selected="true">Node</button>
+        <button class="dock-tab" id="tab-chat" role="tab" aria-selected="false">Ask</button>
+        <span class="dock-spacer"></span>
+        <button class="btn-quiet" id="dock-close" aria-label="Close panel"
+                style="padding:2px 8px;font-family:var(--mono)">✕</button>
+      </div>
+
+    <section class="dock-pane" id="pane-node" role="tabpanel">
+      <div class="panel-head">
+        <div class="panel-title-row">
+          <h2 class="panel-title" id="panel-title">—</h2>
+        </div>
+        <div class="panel-facts">
+          <span class="chip mono" id="panel-type">concept</span>
+          <span class="chip" id="panel-state" hidden></span>
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <p class="panel-lead" id="panel-lead" hidden></p>
+        <div id="panel-map"></div>
+
+        <div class="section-rule"><span class="eyebrow">From the document</span></div>
+        <div id="panel-sources"></div>
+
+        <div class="section-rule"><span class="eyebrow">Connected to</span></div>
+        <div class="related" id="panel-related"></div>
+
+      </div>
+
+      <div class="panel-actions">
+        <button class="btn-ink" id="panel-confirm" style="flex:1">Mark as correct</button>
+        <button id="panel-delete">Delete</button>
+      </div>
+    </section>
+
+    <section class="dock-pane" id="pane-chat" role="tabpanel" hidden>
+      <div class="chat-head">
+        <div class="chat-scope" id="chat-scope">No document selected</div>
+      </div>
+
+      <div class="chat-log" id="chat-log">
+        <p class="chat-empty">Answers come only from the document you have open, with the passages they came from. Pick a document in the list, then ask.</p>
+      </div>
+
+      <form class="chat-ask" id="chat-form">
+        <input id="chat-input" placeholder="What does this document say about…" autocomplete="off">
+        <button class="btn-ink" type="submit" id="chat-send">Ask</button>
+      </form>
+    </section>
+    </aside>
+  </div>
+
+  <footer class="statusbar">
+    <div class="legend" aria-label="What the lines mean">
+      <span title="Something the document says about two concepts">
+        <svg class="legend-mark" data-k="link" viewBox="0 0 26 10" width="26" height="10" aria-hidden="true">
+          <line x1="0" y1="5" x2="16" y2="5" />
+          <polygon points="15,1.5 25,5 15,8.5" />
+        </svg>link</span>
+      <span title="Understand the concept this arrow points to before the one it comes from. The barred head and heavier line stay even if you recolour it.">
+        <svg class="legend-mark" data-k="prereq" viewBox="0 0 26 10" width="26" height="10" aria-hidden="true">
+          <line x1="0" y1="5" x2="14" y2="5" />
+          <polygon points="13,1 22,5 13,9" />
+          <line class="tee" x1="23.5" y1="1" x2="23.5" y2="9" />
+        </svg>read first</span>
+    </div>
+    <span><span class="num" id="stat-nodes">0</span> concepts</span>
+    <span><span class="num" id="stat-edges">0</span> links</span>
+    <span><span class="num" id="stat-prereqs">0</span> to read first</span>
+    <span class="statusbar-hint">Drag to pan · shift-drag to select several · colour is yours, the arrowheads are the graph&rsquo;s</span>
+  </footer>
+</div>
+
+<script type="application/json" id="gf-config" nonce="{{ csp_nonce }}">
+{{ config_json|safe }}
+</script>
+<script src="/static/vendor/cytoscape.min.js" nonce="{{ csp_nonce }}"></script>
+<script src="/static/layout.js" nonce="{{ csp_nonce }}"></script>
+<script src="/static/editor.js" nonce="{{ csp_nonce }}"></script>
+<script src="/static/markdown.js" nonce="{{ csp_nonce }}"></script>
+<script src="/static/chat.js" nonce="{{ csp_nonce }}"></script>
+
+<script nonce="{{ csp_nonce }}">
+(function () {
+  "use strict";
+  const csrf = document.cookie.match(/(?:^|;\s*)gf_csrf=([^;]*)/);
+  const token = csrf ? csrf[1] : "";
+  const input = document.getElementById("file-input");
+
+  function pick() { input.click(); }
+  document.getElementById("upload-btn").addEventListener("click", pick);
+  document.getElementById("upload-btn-empty").addEventListener("click", pick);
+
+  input.addEventListener("change", async function () {
+    if (!input.files.length) return;
+    const body = new FormData();
+    body.append("file", input.files[0]);
+
+    const res = await fetch("/api/w/{{ workspace.id }}/documents", {
+      method: "POST",
+      body: body,
+      credentials: "same-origin",
+      headers: { "X-CSRF-Token": token },
+    });
+    const data = await res.json().catch(function () { return {}; });
+    if (!res.ok) {
+      alert(data.detail || "Upload failed.");
+      return;
+    }
+    // Carried across the reload so the new document is the one on screen.
+    try { sessionStorage.setItem("gf:justUploaded", data.id); } catch (e) { /* ignore */ }
+    window.location.reload();
+  });
+
+  document.getElementById("logout-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    await fetch("/auth/logout", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "X-CSRF-Token": token },
+    });
+    window.location.href = "/signin";
+  });
+})();
+</script>
+{% endblock %}

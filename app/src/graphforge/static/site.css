@@ -1,0 +1,689 @@
+/* The public pages: home and sign-in.
+ *
+ * One idea carries both: a paper page lying on a desk at night, with the map
+ * drawn beside it. It is what studying looks like -- a highlighter, a margin,
+ * a lamp -- and it shows the one thing this product does that a summary tool
+ * does not: every idea on the map is tied to the sentence it came from.
+ *
+ * Kept out of app.css so the editor does not carry a marketing stylesheet, and
+ * so this page can be set larger and looser than the workspace, where density
+ * pays.
+ */
+
+/* ---------------------------------------------------------------- tokens -- */
+.site {
+  --desk: #0e131b;
+  --desk-2: #121824;
+  --sheet: #ece8df;
+  --sheet-tab: #dcd6ca;
+  --sheet-ink: #262d38;
+  --highlight: rgba(246, 204, 76, 0.66);
+  --highlight-solid: #e7b53a;
+  --text: #e9e6df;
+  --text-2: #b6bdc8;
+  --text-3: #8791a1;
+  --line: #2a3341;
+  --line-2: #3a4658;
+  --measure: 1240px;
+}
+
+body.site {
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--text);
+  background-color: var(--desk);
+  /* The desk: a faint grain, so the ground reads as a surface rather than as
+     a flat fill. Data URI, because the page may load nothing from elsewhere. */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .045 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  overflow-x: hidden;
+}
+
+/* :where() keeps this at zero specificity. As `.site a` it outranked
+   `.btn-paper`, and the primary buttons rendered paper-white text on a
+   paper-white fill -- present, clickable, and blank. */
+:where(.site) a { color: inherit; }
+
+/* --------------------------------------------------------------- buttons -- */
+/* Paper, not orange. Orange means "read first" on the map, and a call to
+   action in the same colour would blur the one colour with a fixed meaning. */
+.btn-paper,
+.btn-line {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 14px 22px;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 160ms var(--ease), border-color 160ms var(--ease),
+    color 160ms var(--ease), box-shadow 160ms var(--ease);
+}
+.btn-paper {
+  color: #12161d;
+  background: var(--sheet);
+  border: 1px solid var(--sheet);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 10px 24px -12px rgba(0, 0, 0, 0.7);
+}
+.btn-paper:hover { background: #fbf9f4; border-color: #fbf9f4; }
+.btn-paper:active { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset; }
+.btn-paper:disabled { opacity: 0.6; cursor: progress; }
+
+.btn-line {
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--line-2);
+}
+.btn-line:hover { border-color: var(--text-3); background: rgba(233, 230, 223, 0.04); }
+
+.site :focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+
+/* ------------------------------------------------------------------ nav --- */
+.site-nav {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 26px 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.site-nav .wordmark { font-size: 18px; text-decoration: none; margin-right: auto; }
+.site-nav .wordmark::before { height: 18px; width: 4px; }
+.site-nav .btn-paper,
+.site-nav .btn-line { font-size: 14.5px; padding: 11px 17px; }
+.nav-link {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-2);
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 6px;
+}
+.nav-link:hover { color: var(--text); }
+
+/* ----------------------------------------------------------------- hero --- */
+.hero {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 56px 40px 128px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.22fr);
+  gap: 72px;
+  align-items: center;
+}
+
+.display {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(44px, 4.5vw, 66px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin: 0 0 28px;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.lead {
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--text-2);
+  max-width: 38ch;
+  margin: 0 0 38px;
+}
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.hero-note { margin: 22px 0 0; font-size: 14.5px; color: var(--text-3); }
+
+/* ------------------------------------------------------------ the specimen --
+ * A page, and the map drawn from it. The wires are an SVG laid over both and
+ * drawn from measured positions by specimen.js, so a line always starts at
+ * the highlighted sentence and ends at the idea it became.
+ */
+.specimen {
+  position: relative;
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  column-gap: 64px;
+}
+
+/* Lamp light pooled on the desk under the page. */
+.specimen::before {
+  content: "";
+  position: absolute;
+  inset: -22% -14% -18% -18%;
+  background: radial-gradient(ellipse 58% 52% at 36% 46%, rgba(255, 206, 140, 0.13), rgba(255, 206, 140, 0.04) 45%, transparent 72%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sheet {
+  position: relative;
+  z-index: 1;
+  margin-top: 28px;
+  padding: 30px 36px 32px;
+  background: var(--sheet);
+  color: var(--sheet-ink);
+  border-radius: 3px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 50px 80px -34px rgba(0, 0, 0, 0.85),
+    0 14px 28px -14px rgba(0, 0, 0, 0.55);
+}
+/* The file's name, on a tab, the way a document sits in a folder. */
+.sheet-tab {
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  max-width: 100%;
+  padding: 6px 14px 5px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #4a5361;
+  background: var(--sheet-tab);
+  border-radius: 4px 4px 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sheet p {
+  font-family: var(--serif);
+  font-size: 15.5px;
+  line-height: 1.72;
+  margin: 0 0 14px;
+}
+/* The rest of the page, as text too far away to read. */
+.sheet-rest { margin: 20px 0 0; }
+.sheet-rest i {
+  display: block;
+  height: 7px;
+  margin: 12px 0;
+  border-radius: 4px;
+  background: rgba(38, 45, 56, 0.11);
+}
+.sheet-rest i:nth-child(2) { width: 91%; }
+.sheet-rest i:nth-child(3) { width: 63%; }
+
+/* A highlighter stroke, laid down left to right. */
+.hl {
+  color: inherit;
+  /* <mark> ships with a solid yellow background, which showed under the
+     stroke -- and, before the stroke played, made it look already drawn. */
+  background-color: transparent;
+  padding: 0 2px;
+  margin: 0 -2px;
+  border-radius: 2px;
+  background-image: linear-gradient(transparent 14%, var(--highlight) 14%, var(--highlight) 90%, transparent 90%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 620ms var(--ease), filter 200ms var(--ease);
+  cursor: default;
+}
+
+.map { position: relative; z-index: 3; }
+/* On a wide screen the script lines each idea up with its sentence. On a
+   narrow one the map sits below the page and the ideas simply stack. */
+.map.is-placed .node { position: absolute; left: 0; }
+
+.node {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text);
+  border-radius: 6px;
+  transition: opacity 420ms var(--ease), transform 420ms var(--ease);
+  cursor: default;
+}
+.node .dot {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2.5px solid var(--text);
+  background: var(--desk);
+  box-shadow: 0 0 0 6px rgba(233, 230, 223, 0.05);
+}
+/* The idea two others point at is drawn larger, as it is in the app, where a
+   node's size follows how connected it is. */
+.node[data-size="hub"] .dot { width: 22px; height: 22px; }
+
+.wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 2;
+}
+.wire {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 560ms var(--ease), opacity 200ms var(--ease);
+}
+.wire.leader { stroke: rgba(233, 230, 223, 0.42); stroke-width: 1.3; }
+.wire.link { stroke: var(--firm); stroke-width: 2; }
+.wire.read { stroke: var(--inked); stroke-width: 3; }
+.pin { fill: var(--highlight-solid); transition: opacity 300ms var(--ease); }
+.wire-label {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  transition: opacity 360ms var(--ease);
+}
+.wire-label.link { fill: #6aa7ee; }
+.wire-label.read { fill: #ee7a4a; }
+
+.specimen figcaption {
+  position: relative;
+  z-index: 1;
+  grid-column: 1 / -1;
+  margin-top: 26px;
+  font-size: 14.5px;
+  color: var(--text-3);
+}
+
+/* Before the drawing plays, everything it will draw is held back. Only once
+   the script has armed the figure: without it, the finished state shows. */
+.specimen.is-armed .hl:not(.on) { background-size: 0% 100%; }
+.specimen.is-armed .node:not(.on) { opacity: 0; transform: translateX(-8px); }
+.specimen.is-armed .wire:not(.on) { stroke-dashoffset: 1; }
+.specimen.is-armed .pin:not(.on),
+.specimen.is-armed .wire-label:not(.on) { opacity: 0; }
+.specimen.is-still .hl,
+.specimen.is-still .node,
+.specimen.is-still .wire,
+.specimen.is-still .pin,
+.specimen.is-still .wire-label { transition: none; }
+
+/* Pointing at an idea finds its sentence, and pointing at a sentence finds its
+   idea. Everything else steps back. */
+.specimen.is-focused .node:not(.lit),
+.specimen.is-focused .wire.leader:not(.lit),
+.specimen.is-focused .pin:not(.lit) { opacity: 0.28; }
+.specimen.is-focused .hl:not(.lit) { filter: saturate(0.2) opacity(0.5); }
+.specimen.is-focused .wire.leader.lit { stroke: rgba(233, 230, 223, 0.9); }
+
+/* ------------------------------------------------------------- sections --- */
+.section {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 120px 40px;
+}
+.section + .section { border-top: 1px solid var(--line); }
+
+.section h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(34px, 3.7vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 18px;
+  max-width: 22ch;
+  text-wrap: balance;
+}
+.section-lead { font-size: 18px; line-height: 1.6; color: var(--text-2); max-width: 54ch; margin: 0; }
+
+/* --------------------------------------------------------- the anatomy ----
+ * One idea as the app shows it, annotated in the margin like a figure in a
+ * textbook. Each panel row and its note share a grid row, so a note always
+ * lines up with the part it describes.
+ */
+.anatomy {
+  margin-top: 72px;
+  display: grid;
+  grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+  column-gap: 76px;
+}
+
+.a-cell {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-top: 0;
+  padding: 20px 28px;
+}
+.a-cell.first { border-top: 1px solid var(--line); border-radius: 14px 14px 0 0; padding-top: 28px; }
+.a-cell.last { border-radius: 0 0 14px 14px; padding-bottom: 30px; }
+.a-cell + .a-note + .a-cell { border-top: 1px solid var(--line); }
+
+.a-note {
+  position: relative;
+  margin: 0;
+  padding-top: 20px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--text-2);
+  max-width: 32ch;
+}
+.a-note.first { padding-top: 28px; }
+.a-note::before {
+  content: "";
+  position: absolute;
+  top: calc(20px + 0.75em);
+  left: -76px;
+  width: 62px;
+  border-top: 1px solid var(--line-2);
+}
+.a-note.first::before { top: calc(28px + 0.75em); }
+.a-note::after {
+  content: "";
+  position: absolute;
+  top: calc(20px + 0.75em - 3.5px);
+  left: -79.5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-3);
+}
+.a-note.first::after { top: calc(28px + 0.75em - 3.5px); }
+
+.p-title { font-family: var(--sans); font-size: 24px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+.p-lead { margin: 8px 0 0; font-size: 16px; line-height: 1.55; color: var(--text-2); }
+
+.p-prereq {
+  margin: 0;
+  padding: 11px 15px;
+  border-left: 3px solid var(--inked);
+  border-radius: 0 8px 8px 0;
+  background: rgba(217, 89, 38, 0.09);
+  font-size: 13.5px;
+  color: var(--text-2);
+}
+.p-prereq b {
+  display: block;
+  margin-top: 2px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--inked);
+  text-underline-offset: 3px;
+}
+
+.p-label { margin: 0 0 8px; font-size: 13.5px; font-weight: 500; color: var(--text-2); }
+.p-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.p-list { list-style: none; margin: 0; padding: 0; }
+.p-list li { position: relative; padding: 3px 0 3px 15px; font-size: 15px; line-height: 1.5; }
+.p-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.95em;
+  width: 6px;
+  border-top: 1.5px solid var(--text-3);
+}
+
+.p-table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+.p-table th,
+.p-table td { text-align: left; padding: 8px 0; border-top: 1px solid var(--line); vertical-align: top; }
+.p-table tr:first-child th,
+.p-table tr:first-child td { border-top: 0; }
+.p-table th { width: 46%; padding-right: 16px; font-weight: 500; color: var(--text-2); }
+.p-table tr.self th,
+.p-table tr.self td { color: var(--text); font-weight: 600; }
+
+.p-quote {
+  margin: 0;
+  padding-left: 16px;
+  border-left: 2px solid var(--highlight-solid);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.6;
+}
+.p-quote cite {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--sans);
+  font-style: normal;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+/* --------------------------------------------------------------- steps ---- */
+.steps {
+  position: relative;
+  list-style: none;
+  margin: 72px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 48px;
+}
+/* The three steps sit on one line, the way ideas sit on the map. */
+.steps::before {
+  content: "";
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  width: calc((100% - 96px) * 2 / 3 + 96px);
+  border-top: 1.5px solid var(--line-2);
+}
+.step-num {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-3);
+  background: var(--desk);
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--text);
+}
+.steps li:last-child .step-num { background: var(--sheet); border-color: var(--sheet); color: #12161d; }
+.steps h3 { margin: 24px 0 8px; font-size: 21px; font-weight: 600; letter-spacing: -0.01em; }
+.steps p { margin: 0; font-size: 16.5px; line-height: 1.6; color: var(--text-2); max-width: 34ch; }
+
+/* ----------------------------------------------------------- fine print --- */
+.facts { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 64px; align-items: start; }
+.facts dl { margin: 0; }
+.facts .row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 24px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.facts .row:first-child { border-top: 0; padding-top: 6px; }
+.facts dt { font-size: 15px; font-weight: 500; color: var(--text-3); }
+.facts dd { margin: 0; font-size: 17px; line-height: 1.55; }
+
+/* -------------------------------------------------------------- closing --- */
+.closing h2 { font-size: clamp(40px, 5vw, 70px); max-width: 17ch; margin-bottom: 36px; }
+
+.site-foot {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 30px 40px 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 14.5px;
+  color: var(--text-3);
+}
+.site-foot .wordmark { font-size: 15px; color: var(--text-2); text-decoration: none; margin-right: auto; }
+.site-foot a { text-decoration: none; }
+.site-foot a:hover { color: var(--text); }
+
+/* ------------------------------------------------------------- sign in ---- */
+.signin {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+}
+.signin-main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 56px 36px;
+}
+.signin-main .wordmark { font-size: 18px; text-decoration: none; align-self: flex-start; }
+.signin-main .wordmark::before { height: 18px; width: 4px; }
+
+.signin-form {
+  width: min(400px, 100%);
+  margin: auto 0;
+  padding: 48px 0;
+}
+.signin-form h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 46px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+}
+.signin-lede { margin: 0 0 22px; font-size: 16.5px; color: var(--text-2); }
+.swap { animation: swap 280ms var(--ease); }
+@keyframes swap {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+
+.signin .field { margin-bottom: 20px; }
+.signin .field label { display: block; margin-bottom: 8px; font-size: 14.5px; font-weight: 500; color: var(--text); }
+.signin input {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 16px;
+  color: var(--text);
+  padding: 13px 15px;
+  background: #0a0e14;
+  border: 1px solid #334052;
+  border-radius: 8px;
+  transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease);
+}
+.signin input:hover { border-color: #465467; }
+.signin input:focus {
+  outline: none;
+  border-color: var(--text-2);
+  box-shadow: 0 0 0 4px rgba(233, 230, 223, 0.1);
+}
+.field-hint { margin: 8px 0 0; font-size: 13.5px; color: var(--text-3); }
+
+.pw-wrap { position: relative; }
+.pw-wrap input { padding-right: 72px; }
+.pw-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  padding: 6px 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-2);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+}
+.pw-toggle:hover { color: var(--text); background: rgba(233, 230, 223, 0.06); }
+
+.signin .btn-paper { width: 100%; margin-top: 8px; font-size: 16px; padding: 15px 20px; }
+.signin-error { margin: 0 0 16px; min-height: 22px; font-size: 14.5px; color: var(--danger); }
+.signin-error.ok { color: var(--text-2); }
+.signin-alt { margin: 26px 0 0; font-size: 15px; color: var(--text-2); }
+.signin-alt button {
+  padding: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-decoration-color: var(--text-3);
+  text-underline-offset: 3px;
+}
+.signin-alt button:hover { background: none; text-decoration-color: var(--text); }
+.signin-back { font-size: 14px; color: var(--text-3); text-decoration: none; }
+.signin-back:hover { color: var(--text); }
+
+.signin-aside {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 56px 64px;
+  background: var(--desk-2);
+  border-left: 1px solid var(--line);
+  overflow: hidden;
+}
+.signin-aside h2 {
+  position: relative;
+  z-index: 1;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin: 0 0 44px;
+  max-width: 22ch;
+}
+.signin-aside .specimen { column-gap: 56px; }
+.signin-aside .sheet p { font-size: 14.5px; }
+
+/* ------------------------------------------------------------ responsive -- */
+@media (max-width: 1080px) {
+  .hero { grid-template-columns: 1fr; gap: 72px; padding-bottom: 96px; }
+  .display { max-width: 16ch; }
+  .anatomy { column-gap: 56px; }
+  .a-note::before { left: -56px; width: 44px; }
+  .a-note::after { left: -59.5px; }
+  .signin { grid-template-columns: 1fr; }
+  .signin-aside { display: none; }
+}
+
+@media (max-width: 760px) {
+  body.site { font-size: 16px; }
+  .site-nav { padding: 20px 22px; }
+  .site-nav .nav-link { display: none; }
+  .hero, .section { padding-left: 22px; padding-right: 22px; }
+  .section { padding-top: 84px; padding-bottom: 84px; }
+  .lead { font-size: 17.5px; }
+
+  .specimen { grid-template-columns: 1fr; row-gap: 44px; }
+  .map { display: grid; gap: 64px; padding-left: 4px; }
+  .sheet { padding: 24px 24px 26px; }
+
+  .anatomy { grid-template-columns: 1fr; margin-top: 48px; }
+  .a-cell { border-top: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .a-cell.first, .a-cell.last { border-radius: 12px; padding: 20px; }
+  .a-note, .a-note.first { padding: 10px 4px 26px; font-size: 16px; }
+  .a-note::before, .a-note::after { display: none; }
+  .p-pair { grid-template-columns: 1fr; gap: 16px; }
+
+  .steps { grid-template-columns: 1fr; gap: 40px; margin-top: 48px; }
+  .steps::before { top: 22px; bottom: 22px; left: 21px; width: 0; border-top: 0; border-left: 1.5px solid var(--line-2); }
+  .steps li { display: grid; grid-template-columns: 44px 1fr; column-gap: 20px; }
+  .steps h3 { margin: 9px 0 6px; }
+  .steps p { grid-column: 2; }
+
+  .facts { grid-template-columns: 1fr; gap: 28px; }
+  .facts .row { grid-template-columns: 1fr; gap: 4px; }
+
+  .site-foot { padding: 26px 22px 32px; flex-wrap: wrap; }
+  .signin-main { padding: 22px; }
+  .signin-form h1 { font-size: 38px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swap { animation: none; }
+}

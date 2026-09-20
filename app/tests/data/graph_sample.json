@@ -1,0 +1,771 @@
+{
+ "nodes": [
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:spam email detection",
+   "name": "Spam Email Detection",
+   "type": "event"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases for incremental learning",
+   "name": "Use Cases for Incremental Learning",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:metric:adaptability",
+   "name": "Adaptability",
+   "type": "metric"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:large scale machine learning",
+   "name": "large-scale machine learning",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases for online learning",
+   "name": "Use Cases for Online Learning",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:naive bayes incremental version",
+   "name": "Naive Bayes (Incremental Version)",
+   "type": "method"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:stock price prediction",
+   "name": "Stock price prediction",
+   "type": "event"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:iot applications smart sensors sending live data",
+   "name": "IoT applications (smart sensors sending live data)",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning algorithm",
+   "name": "Online Learning algorithm",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:code_artifact:gaussiannb",
+   "name": "GaussianNB",
+   "type": "code_artifact"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:batch machine learning",
+   "name": "Batch Machine Learning",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:process:training phase",
+   "name": "Training Phase",
+   "type": "process"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:collect historical data",
+   "name": "Collect historical data",
+   "type": "event"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:metric:forgetting old data",
+   "name": "Forgetting Old Data?",
+   "type": "metric"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:fraud detection",
+   "name": "fraud detection",
+   "type": "event"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:train the model using a batch of data",
+   "name": "Train the model using a batch of data",
+   "type": "event"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:process:inference phase",
+   "name": "Inference Phase",
+   "type": "process"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:load the trained model",
+   "name": "Load the trained model",
+   "type": "event"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:apply it to new batches of data",
+   "name": "Apply it to new batches of data",
+   "type": "event"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:example movie recommendation system",
+   "name": "Example: movie recommendation system",
+   "type": "example"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of batch ml",
+   "name": "Disadvantages of Batch ML",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases of batch ml",
+   "name": "Use Cases of Batch ML",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:code_artifact:python code example",
+   "name": "Python Code Example",
+   "type": "code_artifact"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:full retraining example",
+   "name": "Full retraining example",
+   "type": "example"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "name": "Online Learning",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:random forest when trained with incremental data input",
+   "name": "Random Forest (when trained with incremental data input)",
+   "type": "method"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:example use case stock price prediction",
+   "name": "Example Use Case: Stock Price Prediction",
+   "type": "example"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:example use case online ad personalization",
+   "name": "Example Use Case: Online Ad Personalization",
+   "type": "example"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:example use case iot applications",
+   "name": "Example Use Case: IoT applications",
+   "type": "example"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:example algorithm",
+   "name": "Example Algorithm",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:code_artifact:sgdclassifier example",
+   "name": "SGDClassifier example",
+   "type": "code_artifact"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:processing large datasets at once",
+   "name": "processing large datasets at once",
+   "type": "method"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:application:business analytics",
+   "name": "business analytics",
+   "type": "application"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:application:recommendation systems",
+   "name": "recommendation systems",
+   "type": "application"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:iot sensors",
+   "name": "IoT sensors",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:application:fraud detection",
+   "name": "fraud detection",
+   "type": "application"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:model misled by incorrect data points",
+   "name": "model misled by incorrect data points",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:smoothing techniques",
+   "name": "smoothing techniques",
+   "type": "method"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:replay memory",
+   "name": "replay memory",
+   "type": "method"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:hybrid approaches mix of online batch learning",
+   "name": "hybrid approaches (mix of online + batch learning)",
+   "type": "method"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:solution for difficult to tune",
+   "name": "solution for Difficult to Tune",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:key differences online learning vs incremental learning",
+   "name": "Key Differences: Online Learning vs. Incremental Learning",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:key characteristics of incremental learning",
+   "name": "Key Characteristics of Incremental Learning",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:incremental learning algorithm",
+   "name": "Incremental Learning algorithm",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:recommendation systems",
+   "name": "Recommendation Systems",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:resource efficient but may not adapt immediately to new data",
+   "name": "resource-efficient but may not adapt immediately to new data",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:save the trained model",
+   "name": "Save the trained model",
+   "type": "event"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:e g past transactions user behavior",
+   "name": "e.g., past transactions, user behavior",
+   "type": "example"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:spam filtering",
+   "name": "spam filtering",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:store the results for later use",
+   "name": "Store the results for later use",
+   "type": "event"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:benefit:resource friendly doesn t require continuous updates",
+   "name": "Resource-friendly \u2013 Doesn\u2019t require continuous updates",
+   "type": "benefit"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:drawback:not real time it cannot adapt instantly to changes",
+   "name": "Not real-time \u2013 It cannot adapt instantly to changes",
+   "type": "drawback"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:drawback:requires scheduled updates needs periodic retraining",
+   "name": "Requires scheduled updates \u2013 Needs periodic retraining",
+   "type": "drawback"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:use_case:fraud detection credit card fraud patterns updated weekly",
+   "name": "Fraud Detection \u2013 Credit card fraud patterns updated weekly",
+   "type": "use_case"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:use_case:sentiment analysis periodic analysis of user reviews",
+   "name": "Sentiment Analysis \u2013 Periodic analysis of user reviews",
+   "type": "use_case"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:batch learning full retraining",
+   "name": "Batch Learning: Full Retraining",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:technology:linearregression from sklearn",
+   "name": "LinearRegression from sklearn",
+   "type": "technology"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:operation:stacking old and new data then model fit x_total y_total",
+   "name": "stacking old and new data then model.fit(X_total, y_total)",
+   "type": "operation"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:characteristic:learns on the fly real time updates",
+   "name": "Learns on-the-fly (real-time updates)",
+   "type": "characteristic"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:characteristic:often used in non stationary environments",
+   "name": "Often used in non-stationary environments",
+   "type": "characteristic"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online ad personalization",
+   "name": "Online Ad Personalization",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:text classification",
+   "name": "text classification",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:stochastic gradient descent sgd with partial_fit",
+   "name": "Stochastic Gradient Descent (SGD) with partial_fit()",
+   "type": "method"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:new data while keeping previous learned parameters",
+   "name": "new data while keeping previous learned parameters",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:metric:update frequency",
+   "name": "Update Frequency",
+   "type": "metric"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:metric:memory usage",
+   "name": "Memory Usage",
+   "type": "metric"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning with streaming data",
+   "name": "Online Learning with streaming data",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:partial_fit",
+   "name": "partial_fit()",
+   "type": "method"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:no need to store past data as updates happen instantly",
+   "name": "no need to store past data as updates happen instantly",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:model updates as soon as new data arrives",
+   "name": "model updates as soon as new data arrives",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:adapts quickly to new data",
+   "name": "Adapts Quickly to New Data",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:low memory usage",
+   "name": "Low Memory Usage",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:faster training",
+   "name": "Faster Training",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:works for streaming data",
+   "name": "Works for Streaming Data",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of online learning",
+   "name": "Disadvantages of Online Learning",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:sensitive to noisy data",
+   "name": "Sensitive to Noisy Data",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:catastrophic forgetting",
+   "name": "Catastrophic Forgetting",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:requires continuous processing power",
+   "name": "Requires Continuous Processing Power",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:difficult to tune",
+   "name": "Difficult to Tune",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:adaptive learning rates",
+   "name": "Adaptive learning rates",
+   "type": "method"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:keeps a memory of past data",
+   "name": "Keeps a memory of past data",
+   "type": "concept"
+  },
+  {
+   "id": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:trained in phases",
+   "name": "Trained in phases",
+   "type": "concept"
+  }
+ ],
+ "edges": [
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:spam email detection",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases for incremental learning",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases for incremental learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:large scale machine learning",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases for incremental learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:spam filtering",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases for incremental learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:text classification",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:metric:adaptability",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "type": "related_to"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases for online learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:fraud detection",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases for online learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:recommendation systems",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:naive bayes incremental version",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:incremental learning algorithm",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:code_artifact:gaussiannb",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:partial_fit",
+   "type": "uses"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:batch machine learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:processing large datasets at once",
+   "type": "uses"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:batch machine learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:application:business analytics",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:batch machine learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:application:recommendation systems",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:batch machine learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:application:fraud detection",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:batch machine learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:resource efficient but may not adapt immediately to new data",
+   "type": "has_property"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:process:training phase",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:batch machine learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:collect historical data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:train the model using a batch of data",
+   "type": "precedes"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:collect historical data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:e g past transactions user behavior",
+   "type": "defined_as"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:metric:forgetting old data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "type": "related_to"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:train the model using a batch of data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:save the trained model",
+   "type": "precedes"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:process:inference phase",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:batch machine learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:load the trained model",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:apply it to new batches of data",
+   "type": "precedes"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:apply it to new batches of data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:store the results for later use",
+   "type": "precedes"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:example movie recommendation system",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:batch machine learning",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of batch ml",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:benefit:resource friendly doesn t require continuous updates",
+   "type": "includes"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of batch ml",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:drawback:not real time it cannot adapt instantly to changes",
+   "type": "includes"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of batch ml",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:drawback:requires scheduled updates needs periodic retraining",
+   "type": "includes"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases of batch ml",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:use_case:fraud detection credit card fraud patterns updated weekly",
+   "type": "includes"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases of batch ml",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:use_case:sentiment analysis periodic analysis of user reviews",
+   "type": "includes"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:code_artifact:python code example",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:batch learning full retraining",
+   "type": "illustrates"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:full retraining example",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:technology:linearregression from sklearn",
+   "type": "uses"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:full retraining example",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:operation:stacking old and new data then model fit x_total y_total",
+   "type": "shows"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:stock price prediction",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:iot applications smart sensors sending live data",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:incremental learning algorithm",
+   "type": "contrasts_with"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:characteristic:learns on the fly real time updates",
+   "type": "has_property"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:characteristic:often used in non stationary environments",
+   "type": "has_property"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online ad personalization",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:random forest when trained with incremental data input",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:incremental learning algorithm",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:example use case stock price prediction",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:example use case online ad personalization",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:example:example use case iot applications",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:example algorithm",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:stochastic gradient descent sgd with partial_fit",
+   "type": "includes"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:code_artifact:sgdclassifier example",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning with streaming data",
+   "type": "illustrates"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:code_artifact:sgdclassifier example",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:partial_fit",
+   "type": "uses"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:incremental learning algorithm",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:key differences online learning vs incremental learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:recommendation systems",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:use cases for incremental learning",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:stochastic gradient descent sgd with partial_fit",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning algorithm",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:metric:update frequency",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "type": "related_to"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:metric:memory usage",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "type": "related_to"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:partial_fit",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:new data while keeping previous learned parameters",
+   "type": "uses"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:adapts quickly to new data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:stock price prediction",
+   "type": "uses"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:adapts quickly to new data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:event:fraud detection",
+   "type": "uses"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:adapts quickly to new data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:model updates as soon as new data arrives",
+   "type": "defined_as"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:adapts quickly to new data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of online learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:low memory usage",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:no need to store past data as updates happen instantly",
+   "type": "defined_as"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:low memory usage",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of online learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:faster training",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of online learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:works for streaming data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:iot sensors",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:works for streaming data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of online learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of online learning",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:online learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:sensitive to noisy data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:model misled by incorrect data points",
+   "type": "causes"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:sensitive to noisy data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:smoothing techniques",
+   "type": "related_to"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:sensitive to noisy data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of online learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:catastrophic forgetting",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:replay memory",
+   "type": "related_to"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:catastrophic forgetting",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:hybrid approaches mix of online batch learning",
+   "type": "related_to"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:catastrophic forgetting",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of online learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:requires continuous processing power",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of online learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:difficult to tune",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:disadvantages of online learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:method:adaptive learning rates",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:solution for difficult to tune",
+   "type": "example_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:keeps a memory of past data",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:key characteristics of incremental learning",
+   "type": "part_of"
+  },
+  {
+   "source": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:trained in phases",
+   "target": "ffa944d3-079f-46ae-80bc-e79074d0c119:concept:key characteristics of incremental learning",
+   "type": "part_of"
+  }
+ ]
+}

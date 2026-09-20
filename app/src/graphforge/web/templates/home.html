@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}GraphForge: see what a document teaches before you read it{% endblock %}
+{% block body_class %}site{% endblock %}
+{% block head %}
+<meta name="description" content="Upload a PDF, Word file, notes or a GitHub repo. GraphForge maps its key ideas, shows what to understand first, and ties each idea to the sentence it came from.">
+<link rel="stylesheet" href="/static/site.css">
+{% endblock %}
+
+{% block body %}
+<header class="site-nav">
+  <a class="wordmark" href="/">GraphForge</a>
+  <a class="nav-link" href="#how">How it works</a>
+  <a class="nav-link" href="/signin">Sign in</a>
+  <a class="btn-paper" href="/signin?mode=signup">Create an account</a>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+    <div>
+      <h1 class="display" id="hero-title">See what a document teaches before you read it.</h1>
+      <p class="lead">Upload a PDF, Word file, notes or a GitHub repo. GraphForge maps its key ideas, shows what to understand first, and ties each idea to the sentence it came from.</p>
+      <div class="actions">
+        <a class="btn-paper" href="/signin?mode=signup">Create an account</a>
+        <a class="btn-line" href="#how">How it works</a>
+      </div>
+      <p class="hero-note">Works with papers, reports, course notes and codebases.</p>
+    </div>
+
+    {% include "_specimen.html" %}
+  </section>
+
+  <section class="section" aria-labelledby="anatomy-title">
+    <h2 id="anatomy-title">Open any idea to see what the document says about it.</h2>
+    <p class="section-lead">No summary written from nowhere. Everything below comes from the document, and the passage it came from is always one glance away.</p>
+
+    <div class="anatomy">
+      <div class="a-cell first">
+        <p class="p-title">Incremental learning</p>
+        <p class="p-lead">Updates the model gradually as new data arrives, while keeping what it learned before.</p>
+      </div>
+      <p class="a-note first">The idea in one plain sentence, in the document's own terms.</p>
+
+      <div class="a-cell">
+        <p class="p-prereq">Understand this first<b>Online learning</b></p>
+      </div>
+      <p class="a-note">What to learn before this. Follow it and the map takes you there.</p>
+
+      <div class="a-cell">
+        <div class="p-pair">
+          <div>
+            <p class="p-label">Good at</p>
+            <ul class="p-list">
+              <li>Remembers earlier patterns</li>
+              <li>No full retrain for new data</li>
+            </ul>
+          </div>
+          <div>
+            <p class="p-label">Limits</p>
+            <ul class="p-list">
+              <li>Slower to adapt than online learning</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <p class="a-note">Strengths and limits, gathered from wherever the document mentions them.</p>
+
+      <div class="a-cell">
+        <p class="p-label">Compared on memory use</p>
+        <table class="p-table">
+          <tr><th scope="row">Online learning</th><td>Keeps only the model</td></tr>
+          <tr class="self"><th scope="row">Incremental learning</th><td>Keeps some past data</td></tr>
+          <tr><th scope="row">Batch machine learning</th><td>Keeps the full history</td></tr>
+        </table>
+      </div>
+      <p class="a-note">When the document compares ideas, the comparison is kept side by side.</p>
+
+      <div class="a-cell last">
+        <blockquote class="p-quote">
+          The model gradually updates itself with new data while still remembering past knowledge.
+          <cite>Batch, online and incremental ML.pdf, page 3</cite>
+        </blockquote>
+      </div>
+      <p class="a-note">The exact sentence it came from, with the page, so you can check it.</p>
+    </div>
+  </section>
+
+  <section class="section" id="how" aria-labelledby="how-title">
+    <h2 id="how-title">From a file to a map in three steps.</h2>
+    <ol class="steps">
+      <li>
+        <span class="step-num" aria-hidden="true">1</span>
+        <h3>Upload</h3>
+        <p>Add a PDF, Word document, Markdown or text file, or paste a link to a public GitHub repository.</p>
+      </li>
+      <li>
+        <span class="step-num" aria-hidden="true">2</span>
+        <h3>Read the map</h3>
+        <p>A few minutes later the key ideas appear, with arrows showing which to understand first.</p>
+      </li>
+      <li>
+        <span class="step-num" aria-hidden="true">3</span>
+        <h3>Ask about it</h3>
+        <p>Ask questions in plain language. Every answer points to the passages it used.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="section" aria-labelledby="facts-title">
+    <div class="facts">
+      <h2 id="facts-title">Made for the documents you actually have.</h2>
+      <dl>
+        <div class="row">
+          <dt>Formats</dt>
+          <dd>PDF, Word, Markdown and plain text, plus public GitHub repositories.</dd>
+        </div>
+        <div class="row">
+          <dt>Size</dt>
+          <dd>Files up to 25 MB, and PDFs up to 300 pages.</dd>
+        </div>
+        <div class="row">
+          <dt>Your map</dt>
+          <dd>Add your own ideas and links, recolour them, and delete what you do not need. Changes are saved to your workspace.</dd>
+        </div>
+        <div class="row">
+          <dt>Privacy</dt>
+          <dd>Your documents and maps are visible only inside your own workspace.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section closing" aria-labelledby="closing-title">
+    <h2 id="closing-title">Start with the document you have been putting off.</h2>
+    <div class="actions">
+      <a class="btn-paper" href="/signin?mode=signup">Create an account</a>
+      <a class="btn-line" href="/signin">Sign in</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <a class="wordmark" href="/">GraphForge</a>
+  <a href="#how">How it works</a>
+  <a href="/signin">Sign in</a>
+</footer>
+
+<script src="/static/specimen.js" nonce="{{ csp_nonce }}"></script>
+{% endblock %}

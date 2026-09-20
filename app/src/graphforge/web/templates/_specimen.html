@@ -1,0 +1,27 @@
+{#
+  A page of a real document and the map drawn from it. Shared by the home page
+  and the sign-in page; static/specimen.js draws the wires between them.
+
+  The text is from the sample document this product was tuned on, and the map
+  is what extraction actually made of it: three ideas, one "contrasts with"
+  link, and one "read first" -- Online learning before Incremental learning.
+#}
+<figure class="specimen" data-specimen>
+  <div class="sheet">
+    <div class="sheet-tab">Batch, online and incremental ML.pdf</div>
+    <p><mark class="hl" data-for="batch">Batch machine learning</mark> trains a model on stored data at fixed intervals, then serves it unchanged until the next retrain.</p>
+    <p>With <mark class="hl" data-for="online">online learning</mark>, the model updates as each new data point arrives, and keeps no history of what came before.</p>
+    <p><mark class="hl" data-for="incremental">Incremental learning</mark> also updates as it goes, but holds on to past knowledge, so earlier patterns are not forgotten.</p>
+    <div class="sheet-rest" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+
+  <div class="map" aria-label="The map drawn from this page">
+    <div class="node" data-node="batch" tabindex="0"><span class="dot" aria-hidden="true"></span>Batch machine learning</div>
+    <div class="node" data-node="online" data-size="hub" tabindex="0"><span class="dot" aria-hidden="true"></span>Online learning</div>
+    <div class="node" data-node="incremental" tabindex="0"><span class="dot" aria-hidden="true"></span>Incremental learning</div>
+  </div>
+
+  <svg class="wires" aria-hidden="true" focusable="false"></svg>
+
+  <figcaption>{{ caption | default("Each idea on the map is tied to the sentence it came from. Point at one to find it.") }}</figcaption>
+</figure>

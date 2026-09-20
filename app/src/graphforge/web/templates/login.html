@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Sign in to GraphForge{% endblock %}
+{% block body_class %}site{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/static/site.css">
+{% endblock %}
+
+{% block body %}
+<div class="signin">
+  <main class="signin-main">
+    <a class="wordmark" href="/">GraphForge</a>
+
+    <div class="signin-form">
+      <h1 id="auth-heading">Sign in</h1>
+      <p class="signin-lede" id="auth-lede">Pick up where you left off.</p>
+
+      <p class="signin-error" id="auth-error" role="alert" aria-live="polite"></p>
+
+      <form id="auth-form" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="password" name="password"
+                   autocomplete="current-password" minlength="12" required>
+            <button type="button" class="pw-toggle" id="pw-toggle"
+                    aria-controls="password" aria-pressed="false">Show</button>
+          </div>
+          <p class="field-hint" id="pw-hint" hidden>Use at least 12 characters. A long phrase is easier to remember than symbols.</p>
+        </div>
+        <button type="submit" class="btn-paper" id="auth-submit">Sign in</button>
+      </form>
+
+      <p class="signin-alt">
+        <span id="auth-alt-text">New here?</span>
+        <button type="button" id="auth-toggle">Create an account</button>
+      </p>
+    </div>
+
+    <a class="signin-back" href="/">What is GraphForge?</a>
+  </main>
+
+  <aside class="signin-aside" aria-label="What GraphForge does">
+    <h2>Upload a document. See its key ideas, and what to learn first.</h2>
+    {% with caption="Every idea is tied to the sentence it came from." %}
+      {% include "_specimen.html" %}
+    {% endwith %}
+  </aside>
+</div>
+
+<script nonce="{{ csp_nonce }}">
+(function () {
+  "use strict";
+
+  var COPY = {
+    login: {
+      heading: "Sign in",
+      lede: "Pick up where you left off.",
+      submit: "Sign in",
+      busy: "Signing in",
+      alt: "New here?",
+      toggle: "Create an account",
+      autocomplete: "current-password",
+    },
+    signup: {
+      heading: "Create an account",
+      lede: "It takes a moment, and your first map a few minutes more.",
+      submit: "Create account",
+      busy: "Creating account",
+      alt: "Already have an account?",
+      toggle: "Sign in",
+      autocomplete: "new-password",
+    },
+  };
+
+  var form = document.getElementById("auth-form");
+  var err = document.getElementById("auth-error");
+  var submit = document.getElementById("auth-submit");
+  var pw = document.getElementById("password");
+  var heading = document.getElementById("auth-heading");
+  var lede = document.getElementById("auth-lede");
+  var mode = new URLSearchParams(window.location.search).get("mode") === "signup" ? "signup" : "login";
+
+  function setMode(next, animate) {
+    mode = next;
+    var c = COPY[mode];
+    heading.textContent = c.heading;
+    lede.textContent = c.lede;
+    submit.textContent = c.submit;
+    document.getElementById("auth-alt-text").textContent = c.alt;
+    document.getElementById("auth-toggle").textContent = c.toggle;
+    document.getElementById("pw-hint").hidden = mode !== "signup";
+    pw.setAttribute("autocomplete", c.autocomplete);
+    document.title = (mode === "signup" ? "Create an account" : "Sign in") + " to GraphForge";
+
+    if (animate) {
+      // Restart the entrance so the swap is seen, not just read.
+      [heading, lede].forEach(function (el) {
+        el.classList.remove("swap");
+        void el.offsetWidth;
+        el.classList.add("swap");
+      });
+    }
+  }
+
+  function say(message, ok) {
+    err.textContent = message;
+    err.classList.toggle("ok", !!ok);
+  }
+
+  setMode(mode, false);
+
+  document.getElementById("auth-toggle").addEventListener("click", function () {
+    say("");
+    setMode(mode === "login" ? "signup" : "login", true);
+    document.getElementById("email").focus();
+  });
+
+  document.getElementById("pw-toggle").addEventListener("click", function () {
+    var showing = pw.type === "text";
+    pw.type = showing ? "password" : "text";
+    this.textContent = showing ? "Show" : "Hide";
+    this.setAttribute("aria-pressed", String(!showing));
+    pw.focus();
+  });
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    say("");
+    submit.disabled = true;
+    submit.textContent = COPY[mode].busy;
+
+    try {
+      var body = new URLSearchParams({
+        email: document.getElementById("email").value,
+        password: pw.value,
+      });
+      var res = await fetch("/auth/" + mode, {
+        method: "POST",
+        body: body,
+        credentials: "same-origin",
+      });
+      var data = await res.json().catch(function () { return {}; });
+
+      if (!res.ok) {
+        say(data.detail || "That did not work. Check your details and try again.");
+        return;
+      }
+      if (mode === "signup") {
+        setMode("login", true);
+        say(data.message || "Account created. Sign in to continue.", true);
+        pw.value = "";
+        pw.focus();
+        return;
+      }
+      window.location.href = "/";
+    } catch (e) {
+      say("Could not reach GraphForge. Check your connection and try again.");
+    } finally {
+      submit.disabled = false;
+      submit.textContent = COPY[mode].submit;
+    }
+  });
+})();
+</script>
+<script src="/static/specimen.js" nonce="{{ csp_nonce }}"></script>
+{% endblock %}
