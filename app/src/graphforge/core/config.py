@@ -78,7 +78,7 @@ class Settings(BaseSettings):
     neo4j_uri: str = Field(...)
     neo4j_user: str = Field(...)
     neo4j_password: str = Field(...)
-    openai_api_key: str = Field(...)
+    openai_api_key: str = Field(default="")       # optional: extraction/chat disabled if empty
 
     # --- models ---
     # Extraction builds the graph: measured 18/22 concepts against the local
