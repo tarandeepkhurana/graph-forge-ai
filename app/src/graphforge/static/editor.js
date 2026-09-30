@@ -8,6 +8,43 @@
 const CFG = JSON.parse(document.getElementById("gf-config").textContent);
 const CSRF = document.cookie.match(/(?:^|;\s*)gf_csrf=([^;]*)/)?.[1] ?? "";
 
+const CAN_EDIT =
+  CFG.workspaceOwner === true ||
+  CFG.workspaceRole === "editor";
+
+
+function applyReadOnlyMode() {
+  if (CAN_EDIT) return;
+
+  const editControls = [
+    "m-connect",
+    "m-add",
+    "panel-delete",
+    "panel-confirm",
+    "select-swatches",
+    "upload-btn",
+    "upload-btn-empty",
+  ];
+
+  for (const id of editControls) {
+    const element = document.getElementById(id);
+
+    if (element) {
+      element.hidden = true;
+      element.disabled = true;
+    }
+  }
+
+  const modeHint = document.getElementById("mode-hint");
+
+  if (modeHint) {
+    modeHint.textContent = "View only";
+    modeHint.hidden = false;
+  }
+}
+
+applyReadOnlyMode();
+
 const C = {
   ground: "#10141c",
   panel: "#171d28",
@@ -897,7 +934,7 @@ async function pollJobs() {
       doc.status === "ready"
         ? `${doc.pages ?? "—"} pages`
         : (STAGE_WORDS[doc.status] || doc.status);
-    el.querySelector(".doc-progress > i").style.width = `${doc.progress ?? 0}%`;
+    el.querySelector(".doc-progress > span").style.width = `${doc.progress ?? 0}%`;
   }
 
   if (anyReady) await loadGraph();
@@ -1317,7 +1354,7 @@ function refreshCanvasView() {
     document.getElementById("progress-stage").textContent =
       STAGE_WORDS[status] || "Working";
 
-    const fill = selected.querySelector(".doc-progress > i");
+    const fill = selected.querySelector(".doc-progress > span");
     document.getElementById("progress-fill").style.width =
       status === "failed" ? "100%" : (fill ? fill.style.width : "0%");
 

@@ -19,6 +19,8 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from graphforge.api import sharing
+
 from graphforge.core.config import get_settings
 from graphforge.db.database import create_all
 from graphforge.graph import client as graph_client
@@ -126,6 +128,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router)
     app.include_router(workspaces.router)
     app.include_router(chat.router)
+    app.include_router(sharing.router)
     app.include_router(views.router)
 
     @app.get("/health", include_in_schema=False)
