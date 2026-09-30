@@ -8,7 +8,7 @@ with `unsafe-eval` is most of the way to no CSP at all.
 """
 
 from __future__ import annotations
-
+from starlette.middleware.sessions import SessionMiddleware
 import logging
 import secrets
 from contextlib import asynccontextmanager
@@ -39,11 +39,21 @@ templates.env.autoescape = True
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
-    await create_all()
-    await graph_client.init_schema()
+
+    # Connect to PostgreSQL only if configured
+    if settings.database_url:
+        await create_all()
+
+    # Connect to Neo4j only if configured
+    if settings.neo4j_uri:
+        await graph_client.init_schema()
+
     log.info("%s ready", settings.app_name)
+
     yield
-    await graph_client.close()
+
+    if settings.neo4j_uri:
+        await graph_client.close()
 
 
 def create_app() -> FastAPI:
@@ -55,6 +65,13 @@ def create_app() -> FastAPI:
         docs_url="/docs" if settings.debug else None,
         redoc_url=None,
         openapi_url="/openapi.json" if settings.debug else None,
+    )
+
+    app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.secret_key,
+    same_site="lax",
+    https_only=settings.cookie_secure,
     )
 
     if STATIC_DIR.exists():

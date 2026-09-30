@@ -8,9 +8,11 @@ Two behaviours here are deliberate and look like bugs if you skim them:
 * Sign-up returns success even when the email is already registered. The
   alternative -- "that email is taken" -- is an account-existence oracle.
 """
-
 from __future__ import annotations
+from authlib.integrations.starlette_client import OAuth
+from fastapi.responses import RedirectResponse
 
+import secrets
 import logging
 from datetime import datetime, timedelta, timezone
 
@@ -29,6 +31,17 @@ from graphforge.db.models import User, Workspace
 
 log = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["auth"])
+oauth = OAuth()
+
+oauth.register(
+    name="google",
+    client_id=get_settings().google_client_id,
+    client_secret=get_settings().google_client_secret,
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={
+        "scope": "openid profile email",
+    },
+)
 def _cfg():
     return get_settings()
 
@@ -149,6 +162,166 @@ async def login(
     _set_session_cookies(response, token, csrf)
     return {"ok": True}
 
+async def _create_graphforge_session(
+    request: Request,
+    response: Response,
+    db: AsyncSession,
+    user: User,
+) -> None:
+    token = security.new_session_token()
+    csrf = security.new_csrf_token()
+
+    db.add(
+        SessionRow(
+            user_id=user.id,
+            token_hash=security.hash_session_token(token),
+            csrf_token=csrf,
+            expires_at=datetime.now(timezone.utc)
+            + timedelta(hours=_cfg().session_ttl_hours),
+            user_agent=request.headers.get("user-agent", "")[:300],
+            ip=_client_ip(request),
+        )
+    )
+
+    await db.commit()
+
+    _set_session_cookies(response, token, csrf)
+
+
+@router.get("/google")
+async def google_login(request: Request):
+    if not _cfg().google_client_id or not _cfg().google_client_secret:
+        raise HTTPException(
+            status_code=503,
+            detail="Google login is not configured.",
+        )
+
+    google = oauth.create_client("google")
+
+    redirect_uri = _cfg().google_redirect_uri
+
+    return await google.authorize_redirect(
+        request,
+        redirect_uri,
+    )
+
+@router.get("/google/callback")
+async def google_callback(
+    request: Request,
+    response: Response,
+    db: AsyncSession = Depends(get_db),
+):
+    google = oauth.create_client("google")
+
+    try:
+        token = await google.authorize_access_token(request)
+    except Exception:
+        log.exception("Google OAuth token exchange failed")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Google sign-in failed.",
+        )
+
+    userinfo = token.get("userinfo")
+
+    if not userinfo:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Google did not provide user information.",
+        )
+
+    email = userinfo.get("email")
+    email_verified = userinfo.get("email_verified", False)
+
+    if not email or not email_verified:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Google account email could not be verified.",
+        )
+
+    email = email.strip().lower()
+
+    user = (
+        await db.execute(
+            select(User).where(User.email == email)
+        )
+    ).scalar_one_or_none()
+
+    if user is None:
+        # Google-authenticated users don't know a GraphForge password.
+        # Store a valid but random password hash so the existing
+        # password_hash column remains non-null.
+        user = User(
+            email=email,
+            password_hash=security.hash_password(
+                secrets.token_urlsafe(32)
+            ),
+            email_verified=True,
+            is_active=True,
+        )
+
+        db.add(user)
+        await db.flush()
+
+        db.add(
+            Workspace(
+                owner_id=user.id,
+                name="My workspace",
+            )
+        )
+
+        db.add(
+            AuditLog(
+                user_id=user.id,
+                action="google_signup",
+                ip=_client_ip(request),
+            )
+        )
+
+    else:
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="This account is inactive.",
+            )
+
+        user.email_verified = True
+
+        db.add(
+            AuditLog(
+                user_id=user.id,
+                action="google_login",
+                ip=_client_ip(request),
+            )
+        )
+
+    await db.flush()
+
+    token_value = security.new_session_token()
+    csrf = security.new_csrf_token()
+
+    db.add(
+        SessionRow(
+            user_id=user.id,
+            token_hash=security.hash_session_token(token_value),
+            csrf_token=csrf,
+            expires_at=datetime.now(timezone.utc)
+            + timedelta(hours=_cfg().session_ttl_hours),
+            user_agent=request.headers.get("user-agent", "")[:300],
+            ip=_client_ip(request),
+        )
+    )
+
+    await db.commit()
+
+    redirect = RedirectResponse(
+    url="/",
+    status_code=status.HTTP_303_SEE_OTHER,
+)
+
+    _set_session_cookies(redirect, token_value, csrf)
+
+    return redirect
 
 @router.post("/logout")
 async def logout(
