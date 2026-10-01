@@ -14,7 +14,7 @@ const shareLinkInput = document.getElementById("share-link-input");
 const shareLinkCopy = document.getElementById("share-link-copy");
 
 function getCsrfToken() {
-  const csrf = document.cookie.match(/(?:^|;\\s*)gf_csrf=([^;]*)/);
+  const csrf = document.cookie.match(/(?:^|;\s*)gf_csrf=([^;]*)/);
   return csrf ? csrf[1] : "";
 }
 

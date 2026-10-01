@@ -86,19 +86,6 @@ class Session(Base):
     ip: Mapped[str | None] = mapped_column(String(45), nullable=True)
 
 
-# class Workspace(Base):
-#     __tablename__ = "workspaces"
-
-#     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
-#     owner_id: Mapped[uuid.UUID] = mapped_column(
-#         ForeignKey("users.id", ondelete="CASCADE"), index=True
-#     )
-#     name: Mapped[str] = mapped_column(String(200))
-#     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
-
-#     owner: Mapped[User] = relationship(back_populates="workspaces")
-#     documents: Mapped[list["Document"]] = relationship(back_populates="workspace")
-
 class Workspace(Base):
     __tablename__ = "workspaces"
 
@@ -117,7 +104,8 @@ class Workspace(Base):
 
     share_role: Mapped[str] = mapped_column(
         String(20),
-        default="viewer",
+        default="none",
+        server_default="none",
         nullable=False,
     )
 

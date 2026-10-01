@@ -85,7 +85,7 @@ async def home(
     config = {
         "workspaceId": str(workspace.id),
         "workspaceOwner": str(workspace.owner_id) == str(user.id),
-        "workspaceRole": getattr(workspace, "share_role", "viewer"),
+        "workspaceRole": "owner",
         "shapes": ENTITY_SHAPES,
         # Types are open now, so the canvas needs a pool to assign from when it
         # meets one it does not know.

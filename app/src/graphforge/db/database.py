@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -77,6 +78,13 @@ async def create_all() -> None:
     """Create tables. Fine for development; use migrations before production."""
     async with get_engine().begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        # create_all never alters an existing table.
+        await conn.execute(
+            text(
+                "ALTER TABLE workspaces ADD COLUMN IF NOT EXISTS "
+                "share_role varchar(20) NOT NULL DEFAULT 'none'"
+            )
+        )
 
 
 async def dispose() -> None:

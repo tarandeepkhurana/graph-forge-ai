@@ -162,32 +162,6 @@ async def login(
     _set_session_cookies(response, token, csrf)
     return {"ok": True}
 
-async def _create_graphforge_session(
-    request: Request,
-    response: Response,
-    db: AsyncSession,
-    user: User,
-) -> None:
-    token = security.new_session_token()
-    csrf = security.new_csrf_token()
-
-    db.add(
-        SessionRow(
-            user_id=user.id,
-            token_hash=security.hash_session_token(token),
-            csrf_token=csrf,
-            expires_at=datetime.now(timezone.utc)
-            + timedelta(hours=_cfg().session_ttl_hours),
-            user_agent=request.headers.get("user-agent", "")[:300],
-            ip=_client_ip(request),
-        )
-    )
-
-    await db.commit()
-
-    _set_session_cookies(response, token, csrf)
-
-
 @router.get("/google")
 async def google_login(request: Request):
     if not _cfg().google_client_id or not _cfg().google_client_secret:
@@ -314,10 +288,7 @@ async def google_callback(
 
     await db.commit()
 
-    redirect = RedirectResponse(
-    url="/",
-    status_code=status.HTTP_303_SEE_OTHER,
-)
+    redirect = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 
     _set_session_cookies(redirect, token_value, csrf)
 
