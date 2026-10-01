@@ -231,13 +231,13 @@ input::placeholder { color: var(--paper-faint); }
   margin-top: 6px;
   overflow: hidden;
 }
-.doc-progress > i {
+.doc-progress > span {
   display: block;
   height: 100%;
   background: var(--firm);
   transition: width 400ms var(--ease);
 }
-.doc[data-status="failed"] .doc-progress > i { background: var(--danger); }
+.doc[data-status="failed"] .doc-progress > span { background: var(--danger); }
 
 .rail-empty {
   padding: 20px 16px;
@@ -1117,3 +1117,69 @@ button, .btn { padding: 7px 13px; }
    panel. Opacity rather than display, so cytoscape keeps its measured size and
    does not have to re-fit when it comes back. */
 #canvas.is-hidden { opacity: 0; pointer-events: none; }
+
+
+.share-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.share-modal[hidden] {
+  display: none;
+}
+
+.share-dialog {
+  width: min(460px, calc(100vw - 32px));
+  background: #171d28;
+  border: 1px solid #2a3341;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+}
+
+.share-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.share-dialog-header h2 {
+  margin: 0 0 6px;
+}
+
+.share-dialog-header p {
+  margin: 0;
+  opacity: 0.7;
+}
+
+.share-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 0;
+}
+
+.share-setting select {
+  min-width: 130px;
+  padding: 8px 10px;
+}
+
+.share-status {
+  min-height: 20px;
+  margin: 12px 0;
+  opacity: 0.8;
+}
+
+.share-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}

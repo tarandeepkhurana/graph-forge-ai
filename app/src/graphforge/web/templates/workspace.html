@@ -11,6 +11,10 @@
     <div class="workspace-name">{{ workspace.name }}</div>
     <div class="topbar-spacer"></div>
 
+    <button class="btn-quiet" id="share-btn" type="button">
+      Share
+    </button>
+
     <form id="upload-form" style="display:flex;gap:8px;align-items:center">
       <input type="file" id="file-input" name="file" hidden
              accept=".pdf,.docx,.md,.txt,.rst">
@@ -40,7 +44,7 @@
             {{ doc.status.value }}
           {%- endif -%}
         </div>
-        <div class="doc-progress"><i style="width:{{ 100 if doc.status.value == 'ready' else 0 }}%"></i></div>
+        <div class="doc-progress"><span style="width:{{ 100 if doc.status.value == 'ready' else 0 }}%" aria-hidden="true"></span></div>
       </button>
       <button class="doc-delete" data-id="{{ doc.id }}" data-name="{{ doc.filename }}"
               title="Remove this document and its graph"
@@ -181,6 +185,56 @@
   </footer>
 </div>
 
+<div id="share-modal" class="share-modal" hidden>
+  <div class="share-dialog">
+    <div class="share-dialog-header">
+      <div>
+        <h2>Share workspace</h2>
+        <p>Choose what other GraphForge users can do.</p>
+      </div>
+
+      <button
+        type="button"
+        class="btn-quiet"
+        id="share-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="share-setting">
+      <label for="share-role">Access level</label>
+
+      <select id="share-role">
+        <option value="viewer">Anyone can view</option>
+        <option value="editor">Anyone can edit</option>
+        <option value="none">Private (off)</option>
+      </select>
+    </div>
+
+    <div id="share-link-wrap" hidden style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+      <input id="share-link-input" type="text" readonly
+             style="flex:1;font-family:var(--mono);font-size:0.8rem;padding:6px 8px;border:1px solid var(--border);border-radius:4px;background:var(--surface-2,#f5f5f5);color:var(--ink,#111);cursor:text;"
+             aria-label="Shareable link">
+      <button type="button" class="btn-quiet" id="share-link-copy"
+              style="white-space:nowrap;">Copy</button>
+    </div>
+
+    <p id="share-status" class="share-status"></p>
+
+    <div class="share-dialog-actions">
+      <button type="button" class="btn-quiet" id="share-cancel">
+        Cancel
+      </button>
+
+      <button type="button" class="btn-ink" id="share-save">
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+
 <script type="application/json" id="gf-config" nonce="{{ csp_nonce }}">
 {{ config_json|safe }}
 </script>
@@ -189,6 +243,7 @@
 <script src="/static/editor.js" nonce="{{ csp_nonce }}"></script>
 <script src="/static/markdown.js" nonce="{{ csp_nonce }}"></script>
 <script src="/static/chat.js" nonce="{{ csp_nonce }}"></script>
+<script src="/static/sharing.js" nonce="{{ csp_nonce }}"></script>
 
 <script nonce="{{ csp_nonce }}">
 (function () {

@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime, timezone
 
 from fastapi import Depends, HTTPException, Request, status
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from graphforge.core import security, sessions
@@ -74,12 +74,18 @@ async def current_user_optional(
 
     # Cache the identity *and* which workspaces this user owns, so
     # require_workspace can authorise without its own round trip.
-    owned = (
+    shared = (
         await db.execute(
-            select(Workspace.id, Workspace.name).where(Workspace.owner_id == user.id)
+            select(Workspace.id, Workspace.name)
+            .where(
+                or_(
+                    Workspace.owner_id == user.id,
+                    Workspace.share_role.in_(["viewer", "editor"]),
+                )
+            )
         )
     ).all()
-    workspaces = {str(wid): name for wid, name in owned}
+    workspaces = {str(wid): name for wid, name in shared}
 
     sessions.put(
         token_hash,
@@ -117,31 +123,92 @@ async def require_csrf(request: Request) -> None:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "CSRF check failed")
 
 
+# async def require_workspace(
+#     request: Request,
+#     workspace_id: uuid.UUID,
+#     user: User = Depends(current_user),
+#     db: AsyncSession = Depends(get_db),
+# ) -> Workspace:
+#     """Load a workspace only if this user owns it.
+
+#     Ownership is answered from the cached set when available, which removes the
+#     second database round trip from every authorised request. The fallback path
+#     is unchanged, so a cache miss is slower but never wrong -- and a workspace
+#     absent from the set is still refused, never assumed.
+#     """
+#     owned = getattr(request.state, "workspaces", None)
+#     if owned is not None:
+#         name = owned.get(str(workspace_id))
+#         if name is None:
+#             # Not in the owned set: refused without a query. Absence is a
+#             # denial, never an invitation to go and check.
+#             raise NOT_FOUND
+#         # Ownership is already established, so the row is rebuilt from cache
+#         # rather than fetched. Callers only read id / owner_id / name.
+#         return Workspace(id=workspace_id, owner_id=user.id, name=name)
+
+#     workspace = await db.get(Workspace, workspace_id)
+#     if workspace is None or workspace.owner_id != user.id:
+#         raise NOT_FOUND
+#     return workspace
+
+
+
 async def require_workspace(
     request: Request,
     workspace_id: uuid.UUID,
     user: User = Depends(current_user),
     db: AsyncSession = Depends(get_db),
 ) -> Workspace:
-    """Load a workspace only if this user owns it.
-
-    Ownership is answered from the cached set when available, which removes the
-    second database round trip from every authorised request. The fallback path
-    is unchanged, so a cache miss is slower but never wrong -- and a workspace
-    absent from the set is still refused, never assumed.
-    """
-    owned = getattr(request.state, "workspaces", None)
-    if owned is not None:
-        name = owned.get(str(workspace_id))
-        if name is None:
-            # Not in the owned set: refused without a query. Absence is a
-            # denial, never an invitation to go and check.
-            raise NOT_FOUND
-        # Ownership is already established, so the row is rebuilt from cache
-        # rather than fetched. Callers only read id / owner_id / name.
-        return Workspace(id=workspace_id, owner_id=user.id, name=name)
-
     workspace = await db.get(Workspace, workspace_id)
+
+    if workspace is None:
+        raise NOT_FOUND
+
+    is_owner = workspace.owner_id == user.id
+    share_role = workspace.share_role or "none"
+
+    # Anyone with a GraphForge account can open a shared workspace,
+    # but only if sharing is active (viewer or editor). "none" = private.
+    if not is_owner and share_role not in {"viewer", "editor"}:
+        raise NOT_FOUND
+
+    # Safe/read-only requests are available to viewers.
+    #
+    # POST/PATCH/DELETE are mutations in the existing workspace API.
+    # Editors and owners can perform them.
+    #
+    # Chat is a POST but does not modify the graph, so viewers can still use it.
+    is_read_only_post = (
+        request.method == "POST"
+        and request.url.path.endswith("/chat")
+    )
+
+    if (
+        request.method in {"POST", "PUT", "PATCH", "DELETE"}
+        and not is_read_only_post
+        and not is_owner
+        and share_role != "editor"
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This workspace is read-only for you.",
+        )
+
+    # Make the role available to the frontend/template if needed.
+    request.state.workspace_role = "owner" if is_owner else share_role
+
+    return workspace
+
+
+async def require_workspace_owner(
+    workspace_id: uuid.UUID,
+    user: User = Depends(current_user),
+    db: AsyncSession = Depends(get_db),
+) -> Workspace:
+    workspace = await db.get(Workspace, workspace_id)
+
     if workspace is None or workspace.owner_id != user.id:
         raise NOT_FOUND
+
     return workspace

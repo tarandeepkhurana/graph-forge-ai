@@ -8,12 +8,14 @@ from __future__ import annotations
 
 import json
 
+import uuid
+
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from graphforge.api.deps import current_user_optional
+from graphforge.api.deps import current_user_optional, require_workspace
 from graphforge.core.config import get_limits
 from graphforge.db.database import get_db
 from graphforge.db.models import Document, User, Workspace
@@ -82,9 +84,62 @@ async def home(
 
     config = {
         "workspaceId": str(workspace.id),
+        "workspaceOwner": str(workspace.owner_id) == str(user.id),
+        "workspaceRole": getattr(workspace, "share_role", "viewer"),
         "shapes": ENTITY_SHAPES,
         # Types are open now, so the canvas needs a pool to assign from when it
         # meets one it does not know.
+        "spareShapes": _SPARE_SHAPES,
+        "minConfidence": get_limits().min_confidence,
+        "relationTypes": RELATION_TYPES,
+    }
+
+    return templates.TemplateResponse(
+        request,
+        "workspace.html",
+        {
+            "workspace": workspace,
+            "documents": documents,
+            "config_json": json.dumps(config),
+            "csp_nonce": getattr(request.state, "csp_nonce", ""),
+        },
+    )
+
+
+@router.get("/w/{workspace_id}", response_class=HTMLResponse)
+async def workspace_page(
+    request: Request,
+    workspace: Workspace = Depends(require_workspace),
+    db: AsyncSession = Depends(get_db),
+):
+    """Open any workspace by its ID.
+
+    The owner lands here directly; for shared workspaces, `require_workspace`
+    already checked that the logged-in user is allowed to see it.
+    """
+    documents = (
+        (
+            await db.execute(
+                select(Document)
+                .where(Document.workspace_id == workspace.id)
+                .order_by(Document.created_at)
+            )
+        )
+        .scalars()
+        .all()
+    )
+
+    from graphforge.main import templates
+
+    # Determine caller's role so the UI can show/hide edit controls.
+    role = getattr(request.state, "workspace_role", "viewer")
+    is_owner = role == "owner"
+
+    config = {
+        "workspaceId": str(workspace.id),
+        "workspaceOwner": is_owner,
+        "workspaceRole": role,
+        "shapes": ENTITY_SHAPES,
         "spareShapes": _SPARE_SHAPES,
         "minConfidence": get_limits().min_confidence,
         "relationTypes": RELATION_TYPES,

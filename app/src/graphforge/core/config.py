@@ -79,7 +79,10 @@ class Settings(BaseSettings):
     neo4j_user: str = Field(...)
     neo4j_password: str = Field(...)
     openai_api_key: str = Field(default="")       # optional: extraction/chat disabled if empty
-
+    
+    google_client_id: str = ""
+    google_client_secret: str = ""
+    google_redirect_uri: str = "http://localhost:8000/auth/google/callback"
     # --- models ---
     # Extraction builds the graph: measured 18/22 concepts against the local
     # encoder's 9/22 on a real document, so it gets the stronger model.
