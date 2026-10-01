@@ -11,6 +11,10 @@
     <div class="workspace-name">{{ workspace.name }}</div>
     <div class="topbar-spacer"></div>
 
+    <button class="btn-quiet" id="quiz-btn" type="button">
+      Quiz
+    </button>
+
     <button class="btn-quiet" id="share-btn" type="button">
       Share
     </button>
@@ -235,6 +239,54 @@
   </div>
 </div>
 
+<div id="quiz-modal" class="share-modal" hidden>
+  <div class="share-dialog">
+    <div class="share-dialog-header">
+      <div>
+        <h2>Create a quiz</h2>
+        <p>Questions are written from one document. Share the link with students; they sign in and take it once.</p>
+      </div>
+      <button type="button" class="btn-quiet" id="quiz-close" aria-label="Close">×</button>
+    </div>
+
+    <div id="quiz-form-wrap">
+      <div class="share-setting">
+        <label for="quiz-doc">Document</label>
+        <select id="quiz-doc">
+          {% for doc in documents if doc.status.value == "ready" %}
+          <option value="{{ doc.id }}">{{ doc.filename }}</option>
+          {% else %}
+          <option value="" disabled selected>No ready documents yet</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="share-setting">
+        <label for="quiz-count">Questions</label>
+        <select id="quiz-count">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="quiz-link-wrap" class="quiz-link" hidden>
+      <input id="quiz-link-input" type="text" readonly aria-label="Quiz link">
+      <button type="button" class="btn-quiet" id="quiz-link-copy">Copy</button>
+    </div>
+
+    <p id="quiz-status" class="share-status"></p>
+
+    <div class="share-dialog-actions">
+      <a class="btn btn-quiet" href="/quizzes">My quizzes</a>
+      <span style="flex:1"></span>
+      <button type="button" class="btn-quiet" id="quiz-cancel">Close</button>
+      <button type="button" class="btn-ink" id="quiz-create">Generate</button>
+    </div>
+  </div>
+</div>
+
 <script type="application/json" id="gf-config" nonce="{{ csp_nonce }}">
 {{ config_json|safe }}
 </script>
@@ -244,6 +296,7 @@
 <script src="/static/markdown.js" nonce="{{ csp_nonce }}"></script>
 <script src="/static/chat.js" nonce="{{ csp_nonce }}"></script>
 <script src="/static/sharing.js" nonce="{{ csp_nonce }}"></script>
+<script src="/static/quiz.js" nonce="{{ csp_nonce }}"></script>
 
 <script nonce="{{ csp_nonce }}">
 (function () {

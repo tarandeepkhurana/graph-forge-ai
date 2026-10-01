@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{{ quiz.title }} · Results{% endblock %}
+
+{% block body %}
+<div class="qpage">
+  {% include "_qbar.html" %}
+  <main class="qwrap" id="quiz-results" data-quiz-id="{{ quiz.id }}">
+    <h1>{{ quiz.title }}</h1>
+    <p class="qsub">From <strong>{{ quiz.document_name }}</strong> · {{ quiz.questions|length }} questions · created {{ quiz.created_at.strftime("%d %b %Y") }}</p>
+
+    <div class="quiz-link">
+      <input id="quiz-share-link" type="text" readonly aria-label="Link for students">
+      <button type="button" class="btn-ink" id="quiz-share-copy">Copy student link</button>
+      <button type="button" class="btn-quiet" id="quiz-delete">Delete quiz</button>
+    </div>
+
+    <h2>Responses ({{ attempts|length }})</h2>
+    {% if attempts %}
+    <table class="qtable">
+      <thead><tr><th>Student</th><th>Marks</th><th>Submitted</th><th>Answers</th></tr></thead>
+      <tbody>
+        {% for attempt, email in attempts %}
+        <tr>
+          <td>{{ email }}</td>
+          <td class="qnum">{{ attempt.score }} / {{ attempt.total }}</td>
+          <td class="qnum">{{ attempt.created_at.strftime("%d %b %Y %H:%M") }}</td>
+          <td>
+            <details class="qdetail">
+              <summary>View</summary>
+              <ol>
+                {% for q in quiz.questions %}
+                {% set a = attempt.answers[loop.index0] %}
+                <li>
+                  {% if a == q.answer %}<span class="qmark ok">✓</span>{% else %}<span class="qmark no">✗</span>{% endif %}
+                  {% if a >= 0 %}{{ q.options[a] }}{% else %}<em>skipped</em>{% endif %}
+                </li>
+                {% endfor %}
+              </ol>
+            </details>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="qempty">No responses yet. Share the link above with your students.</p>
+    {% endif %}
+
+    <h2>Questions and answers</h2>
+    {% for q in quiz.questions %}
+    <div class="qcard">
+      <p class="qq">{{ loop.index }}. {{ q.question }}</p>
+      <ul class="qopts">
+        {% for opt in q.options %}
+        <li class="qopt {% if loop.index0 == q.answer %}correct{% endif %}">
+          {{ opt }}
+          {% if loop.index0 == q.answer %}<span class="qtag">correct</span>{% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% if q.explanation %}<p class="qexpl">{{ q.explanation }}</p>{% endif %}
+    </div>
+    {% endfor %}
+  </main>
+</div>
+<script src="/static/quiz.js" nonce="{{ csp_nonce }}"></script>
+{% endblock %}

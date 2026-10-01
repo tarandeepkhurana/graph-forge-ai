@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}My quizzes · GraphForge{% endblock %}
+
+{% block body %}
+<div class="qpage">
+  {% include "_qbar.html" %}
+  <main class="qwrap">
+    <h1>My quizzes</h1>
+    <p class="qsub">Signed in as {{ user.email }}</p>
+
+    <h2>Quizzes you created</h2>
+    {% if created %}
+    <table class="qtable">
+      <thead><tr><th>Quiz</th><th>Document</th><th>Questions</th><th>Responses</th><th>Created</th></tr></thead>
+      <tbody>
+        {% for quiz, responses in created %}
+        <tr>
+          <td><a href="/quizzes/{{ quiz.id }}">{{ quiz.title }}</a></td>
+          <td>{{ quiz.document_name }}</td>
+          <td class="qnum">{{ quiz.questions|length }}</td>
+          <td class="qnum">{{ responses }}</td>
+          <td class="qnum">{{ quiz.created_at.strftime("%d %b %Y") }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="qempty">None yet. Open a workspace and use the Quiz button to create one from a document.</p>
+    {% endif %}
+
+    <h2>Quizzes you took</h2>
+    {% if taken %}
+    <table class="qtable">
+      <thead><tr><th>Quiz</th><th>Document</th><th>Marks</th><th>Taken</th></tr></thead>
+      <tbody>
+        {% for attempt, quiz in taken %}
+        <tr>
+          <td><a href="/q/{{ quiz.id }}">{{ quiz.title }}</a></td>
+          <td>{{ quiz.document_name }}</td>
+          <td class="qnum">{{ attempt.score }} / {{ attempt.total }}</td>
+          <td class="qnum">{{ attempt.created_at.strftime("%d %b %Y") }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="qempty">You haven't taken any quizzes.</p>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}

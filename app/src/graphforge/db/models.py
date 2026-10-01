@@ -23,7 +23,7 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
 )
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -184,6 +184,45 @@ class AiUsage(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
     __table_args__ = (Index("ix_ai_usage_user_day", "user_id", "created_at"),)
+
+
+class Quiz(Base):
+    __tablename__ = "quizzes"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    owner_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("workspaces.id", ondelete="CASCADE"), index=True
+    )
+    # Kept if the document is later removed, so old results stay readable.
+    document_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("documents.id", ondelete="SET NULL"), nullable=True
+    )
+    document_name: Mapped[str] = mapped_column(String(400))
+    title: Mapped[str] = mapped_column(String(300))
+    # [{question, options[4], answer, explanation}]
+    questions: Mapped[list] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class QuizAttempt(Base):
+    __tablename__ = "quiz_attempts"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    quiz_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("quizzes.id", ondelete="CASCADE"), index=True
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    answers: Mapped[list] = mapped_column(JSONB)   # chosen option per question, -1 = skipped
+    score: Mapped[int] = mapped_column(Integer)
+    total: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+    __table_args__ = (UniqueConstraint("quiz_id", "user_id", name="uq_one_attempt_per_user"),)
 
 
 class AuditLog(Base):

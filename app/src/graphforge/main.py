@@ -122,14 +122,17 @@ def create_app() -> FastAPI:
             {"detail": "Something went wrong."}, status_code=500
         )
 
-    from graphforge.api import auth, chat, workspaces
-    from graphforge.web import views
+    from graphforge.api import auth, chat, quizzes, workspaces
+    from graphforge.web import quiz_views, views
 
     app.include_router(auth.router)
     app.include_router(workspaces.router)
     app.include_router(chat.router)
     app.include_router(sharing.router)
+    app.include_router(quizzes.workspace_router)
+    app.include_router(quizzes.router)
     app.include_router(views.router)
+    app.include_router(quiz_views.router)
 
     @app.get("/health", include_in_schema=False)
     async def health() -> dict:

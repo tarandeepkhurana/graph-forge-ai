@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ quiz.title }} · Quiz{% endblock %}
+
+{% block body %}
+<div class="qpage">
+  {% include "_qbar.html" %}
+  <main class="qwrap">
+    <h1>{{ quiz.title }}</h1>
+    <p class="qsub">From <strong>{{ quiz.document_name }}</strong> · {{ quiz.questions|length }} questions · signed in as {{ user.email }}</p>
+
+    {% if attempt %}
+      <p class="qscore">{{ attempt.score }} / {{ attempt.total }}</p>
+      <p class="qsub">Submitted {{ attempt.created_at.strftime("%d %b %Y %H:%M") }}. Your marks are also saved under <a href="/quizzes">My quizzes</a>.</p>
+
+      {% for q in quiz.questions %}
+      {% set a = attempt.answers[loop.index0] %}
+      <div class="qcard">
+        <p class="qq">{{ loop.index }}. {{ q.question }}</p>
+        <ul class="qopts">
+          {% for opt in q.options %}
+          <li class="qopt {% if loop.index0 == q.answer %}correct{% elif loop.index0 == a %}wrong{% endif %}">
+            {{ opt }}
+            {% if loop.index0 == a %}<span class="qtag">your answer</span>{% elif loop.index0 == q.answer %}<span class="qtag">correct</span>{% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+        {% if a < 0 %}<p class="qexpl">You skipped this one.</p>{% endif %}
+        {% if q.explanation %}<p class="qexpl">{{ q.explanation }}</p>{% endif %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <form id="quiz-take" data-quiz-id="{{ quiz.id }}" data-count="{{ quiz.questions|length }}">
+        {% for q in quiz.questions %}
+        {% set qi = loop.index0 %}
+        <div class="qcard">
+          <p class="qq">{{ loop.index }}. {{ q.question }}</p>
+          <div class="qopts">
+            {% for opt in q.options %}
+            <label class="qopt">
+              <input type="radio" name="q{{ qi }}" value="{{ loop.index0 }}">
+              <span>{{ opt }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+        <div class="qactions">
+          <button type="submit" class="btn-ink" id="quiz-submit">Submit answers</button>
+          <span id="quiz-take-status" class="qsub" style="margin:0"></span>
+        </div>
+        <p class="qempty">You can submit only once.</p>
+      </form>
+    {% endif %}
+  </main>
+</div>
+<script src="/static/quiz.js" nonce="{{ csp_nonce }}"></script>
+{% endblock %}

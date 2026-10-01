@@ -19,6 +19,7 @@ from graphforge.api.deps import current_user_optional, require_workspace
 from graphforge.core.config import get_limits
 from graphforge.db.database import get_db
 from graphforge.db.models import Document, User, Workspace
+from graphforge.web import quiz_views
 from graphforge.extraction.schema import ENTITY_SHAPES, RELATION_TYPES, _SPARE_SHAPES
 
 router = APIRouter(include_in_schema=False)
@@ -50,6 +51,14 @@ async def home(
         return templates.TemplateResponse(
             request, "home.html", {"csp_nonce": getattr(request.state, "csp_nonce", "")}
         )
+
+    next_path = request.cookies.get(quiz_views.NEXT_COOKIE)
+    if next_path:
+        response = RedirectResponse(
+            next_path if quiz_views.is_safe_next(next_path) else "/", status_code=303
+        )
+        response.delete_cookie(quiz_views.NEXT_COOKIE)
+        return response
 
     workspace = (
         await db.execute(
