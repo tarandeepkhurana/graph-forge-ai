@@ -415,6 +415,52 @@ function updateStatus() {
     edges.filter("[?prerequisite]").length;
 }
 
+/* ---------------------------------------------------------- stats panel */
+(function () {
+  const btn   = document.getElementById("stats-btn");
+  const panel = document.getElementById("stats-panel");
+  if (!btn || !panel) return;
+
+  btn.addEventListener("click", function () {
+    if (!panel.hidden) { panel.hidden = true; return; }
+
+    const nodeCount = cy.nodes().not(".filtered").length;
+    const edgeCount = cy.edges().not(".filtered").length;
+
+    // Top 3 most-connected visible nodes
+    const top3 = cy.nodes().not(".filtered")
+      .sort((a, b) =>
+        b.connectedEdges().not(".filtered").length -
+        a.connectedEdges().not(".filtered").length
+      )
+      .slice(0, 3)
+      .map(n =>
+        `<li>${n.data("name")} — ${n.connectedEdges().not(".filtered").length} links</li>`
+      )
+      .join("");
+
+    panel.innerHTML =
+      `<strong>Graph stats</strong><br>` +
+      `Nodes: <b>${nodeCount}</b> &nbsp; Edges: <b>${edgeCount}</b>` +
+      (top3 ? `<br><br><em>Most connected:</em><ul style="margin:4px 0 0;padding-left:16px">${top3}</ul>` : "");
+
+    panel.hidden = false;
+  });
+
+  // Close when clicking anywhere else
+  document.addEventListener("click", function (e) {
+    if (!panel.hidden && e.target !== btn) panel.hidden = true;
+  });
+})();
+
+document.getElementById('node-search').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  cy.nodes().forEach(node => {
+    const match = node.data('name').toLowerCase().includes(q);
+    node.style('opacity', match || q === '' ? 1 : 0.1);
+  });
+});
+
 /* ------------------------------------------------------------ side panel */
 /* One dock, two views. `panel` still names the node view's state holder so the
    rest of this file reads unchanged, but open/close now belongs to the dock. */
